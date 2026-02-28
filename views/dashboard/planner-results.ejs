@@ -1,0 +1,35 @@
+<%- include("../partials/header", { title: title }) %>
+<section>
+  <h1>AI Planner Recommendations</h1>
+  <p class="muted">Based on $<%= criteria.budget %>, <%= criteria.days %> days, <%= criteria.travelType %>, <%= criteria.travelers %> traveler(s).</p>
+  <div class="card-grid">
+    <% if (!matches.length) { %>
+      <article class="glass mini-card"><p>No exact matches found. Try increasing budget or changing travel type.</p></article>
+    <% } %>
+    <% matches.forEach(pkg => { %>
+      <article class="package-card glass">
+        <img src="<%= pkg.image %>" alt="<%= pkg.title %>" />
+        <div class="card-content">
+          <h3><%= pkg.title %></h3>
+          <p><%= pkg.destination %> - <%= pkg.duration %> days - <%= pkg.travelType %></p>
+          <p class="price">Estimated: $<%= pkg.price %> / person</p>
+          <div class="itinerary-block">
+            <p><strong>Itinerary:</strong></p>
+            <% if (pkg.itinerary && pkg.itinerary.trim()) { %>
+              <ul class="itinerary-list">
+                <% pkg.itinerary.split(/,\s*(?=Day\s*\d+)/i).forEach(dayPlan => { %>
+                  <li><%= dayPlan.trim() %></li>
+                <% }) %>
+              </ul>
+            <% } else { %>
+              <p class="muted">Custom day-by-day itinerary included after booking.</p>
+            <% } %>
+          </div>
+          <p><strong>Activities:</strong> <%= pkg.activities.join(", ") %></p>
+          <a href="/packages/<%= pkg._id %>" class="btn btn-primary">View Package</a>
+        </div>
+      </article>
+    <% }) %>
+  </div>
+</section>
+<%- include("../partials/footer") %>

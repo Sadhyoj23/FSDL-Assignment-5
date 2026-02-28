@@ -1,0 +1,110 @@
+<%- include("../partials/header", { title: title }) %>
+<section class="dashboard-layout">
+  <aside class="glass sidebar">
+    <h2>Admin Console</h2>
+    <a href="/admin">Overview</a>
+    <a href="/packages">Packages</a>
+    <a href="/dashboard">User Dashboard</a>
+  </aside>
+
+  <main>
+    <section class="glass mini-card">
+      <h1>Manage Travel Packages</h1>
+      <form method="post" action="/admin/packages" class="form-grid">
+        <input name="title" placeholder="Title" required />
+        <input name="destination" placeholder="Destination" required />
+        <select name="travelType" required>
+          <option value="adventure">Adventure</option>
+          <option value="beach">Beach</option>
+          <option value="hill station">Hill Station</option>
+          <option value="cultural">Cultural</option>
+          <option value="relaxation">Relaxation</option>
+        </select>
+        <input type="number" name="price" placeholder="Price" required />
+        <input type="number" name="duration" placeholder="Duration (days)" required />
+        <input name="image" placeholder="Image URL" required />
+        <textarea name="description" placeholder="Description" required></textarea>
+        <textarea name="itinerary" placeholder="Itinerary"></textarea>
+        <input name="activities" placeholder="Activities comma separated" />
+        <button class="btn btn-primary">Add Package</button>
+      </form>
+    </section>
+
+    <section>
+      <h2 class="section-title">Package Inventory</h2>
+      <div class="card-grid">
+        <% packages.forEach(pkg => { %>
+          <article class="glass mini-card">
+            <h3><%= pkg.title %></h3>
+            <p><%= pkg.destination %> - $<%= pkg.price %> - <%= pkg.duration %> days</p>
+            <form method="post" action="/admin/packages/<%= pkg._id %>/update" class="form-grid">
+              <input name="title" value="<%= pkg.title %>" required />
+              <input name="destination" value="<%= pkg.destination %>" required />
+              <select name="travelType" required>
+                <option value="adventure" <%= pkg.travelType === "adventure" ? "selected" : "" %>>Adventure</option>
+                <option value="beach" <%= pkg.travelType === "beach" ? "selected" : "" %>>Beach</option>
+                <option value="hill station" <%= pkg.travelType === "hill station" ? "selected" : "" %>>Hill Station</option>
+                <option value="cultural" <%= pkg.travelType === "cultural" ? "selected" : "" %>>Cultural</option>
+                <option value="relaxation" <%= pkg.travelType === "relaxation" ? "selected" : "" %>>Relaxation</option>
+              </select>
+              <input type="number" name="price" value="<%= pkg.price %>" required />
+              <input type="number" name="duration" value="<%= pkg.duration %>" required />
+              <input name="image" value="<%= pkg.image %>" required />
+              <textarea name="description" required><%= pkg.description %></textarea>
+              <textarea name="itinerary"><%= pkg.itinerary %></textarea>
+              <input name="activities" value="<%= pkg.activities.join(', ') %>" />
+              <button class="btn btn-primary">Update</button>
+            </form>
+            <form method="post" action="/admin/packages/<%= pkg._id %>/delete">
+              <button class="btn btn-secondary">Delete</button>
+            </form>
+          </article>
+        <% }) %>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Users</h2>
+      <div class="glass table-wrap">
+        <table>
+          <tr><th>Name</th><th>Email</th><th>Role</th></tr>
+          <% users.forEach(user => { %>
+            <tr><td><%= user.name %></td><td><%= user.email %></td><td><%= user.isAdmin ? "Admin" : "User" %></td></tr>
+          <% }) %>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Bookings</h2>
+      <div class="glass table-wrap">
+        <table>
+          <tr><th>User</th><th>Package</th><th>Date</th><th>Status</th></tr>
+          <% bookings.forEach(b => { %>
+            <tr>
+              <td><%= b.userId?.name || "N/A" %></td>
+              <td><%= b.packageId?.title || "Removed" %></td>
+              <td><%= new Date(b.travelDate).toDateString() %></td>
+              <td><%= b.status %></td>
+            </tr>
+          <% }) %>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Reviews</h2>
+      <div class="card-grid">
+        <% reviews.forEach(r => { %>
+          <article class="glass mini-card">
+            <p><strong><%= r.userId?.name || "User" %></strong> on <%= r.packageId?.title || "Package" %></p>
+            <p><%= r.rating %>/5</p>
+            <p><%= r.comment %></p>
+            <form method="post" action="/admin/reviews/<%= r._id %>/delete"><button class="btn btn-secondary">Delete</button></form>
+          </article>
+        <% }) %>
+      </div>
+    </section>
+  </main>
+</section>
+<%- include("../partials/footer") %>

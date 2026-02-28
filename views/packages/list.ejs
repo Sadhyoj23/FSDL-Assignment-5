@@ -1,0 +1,56 @@
+<%- include("../partials/header", { title: title }) %>
+<section class="glass filter-bar">
+  <form method="get" action="/packages" class="filter-grid">
+    <input type="text" name="q" placeholder="Search destination or package" value="<%= filters.q %>" />
+    <select name="type">
+      <option value="">All types</option>
+      <option value="adventure" <%= filters.type === "adventure" ? "selected" : "" %>>Adventure</option>
+      <option value="beach" <%= filters.type === "beach" ? "selected" : "" %>>Beach</option>
+      <option value="hill station" <%= filters.type === "hill station" ? "selected" : "" %>>Hill Station</option>
+      <option value="cultural" <%= filters.type === "cultural" ? "selected" : "" %>>Cultural</option>
+      <option value="relaxation" <%= filters.type === "relaxation" ? "selected" : "" %>>Relaxation</option>
+      <option value="luxury" <%= filters.type === "luxury" ? "selected" : "" %>>Luxury</option>
+      <option value="family" <%= filters.type === "family" ? "selected" : "" %>>Family</option>
+      <option value="city" <%= filters.type === "city" ? "selected" : "" %>>City</option>
+      <option value="road trip" <%= filters.type === "road trip" ? "selected" : "" %>>Road Trip</option>
+    </select>
+    <select name="sort">
+      <option value="">Newest</option>
+      <option value="price_asc" <%= filters.sort === "price_asc" ? "selected" : "" %>>Price Low to High</option>
+      <option value="price_desc" <%= filters.sort === "price_desc" ? "selected" : "" %>>Price High to Low</option>
+      <option value="rating_desc" <%= filters.sort === "rating_desc" ? "selected" : "" %>>Rating</option>
+      <option value="duration_asc" <%= filters.sort === "duration_asc" ? "selected" : "" %>>Duration Short</option>
+      <option value="duration_desc" <%= filters.sort === "duration_desc" ? "selected" : "" %>>Duration Long</option>
+    </select>
+    <button class="btn btn-primary">Apply</button>
+  </form>
+</section>
+
+<section class="card-grid">
+  <% if (!packages.length) { %>
+    <article class="glass mini-card">
+      <p>No packages match your current filters. Clear filters or change travel type.</p>
+    </article>
+  <% } %>
+  <% packages.forEach(pkg => { %>
+    <article class="package-card glass">
+      <img src="<%= pkg.image %>" alt="<%= pkg.title %>" />
+      <div class="card-content">
+        <h3><%= pkg.title %></h3>
+        <p><%= pkg.destination %> - <%= pkg.travelType %> - <%= pkg.duration %> days</p>
+        <p><%= pkg.description %></p>
+        <p class="price">$<%= pkg.price %> / person</p>
+        <p>Rating: <%= pkg.rating || 0 %> / 5</p>
+        <div class="row-actions">
+          <a href="/packages/<%= pkg._id %>" class="btn btn-primary">Details</a>
+          <% if (favoriteIds.includes(String(pkg._id))) { %>
+            <form method="post" action="/favorites/<%= pkg._id %>/remove"><button class="btn btn-secondary">Unfavorite</button></form>
+          <% } else { %>
+            <form method="post" action="/favorites/<%= pkg._id %>"><button class="btn btn-secondary">Favorite</button></form>
+          <% } %>
+        </div>
+      </div>
+    </article>
+  <% }) %>
+</section>
+<%- include("../partials/footer") %>

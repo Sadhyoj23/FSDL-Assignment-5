@@ -1,0 +1,53 @@
+<%- include("../partials/header", { title: title }) %>
+<section class="detail-grid">
+  <article class="glass detail-hero">
+    <img src="<%= pkg.image %>" alt="<%= pkg.title %>" class="detail-image" />
+    <div>
+      <h1><%= pkg.title %></h1>
+      <p><%= pkg.destination %> - <%= pkg.duration %> days - <%= pkg.travelType %></p>
+      <p class="price">$<%= pkg.price %> / person</p>
+      <p><%= pkg.description %></p>
+      <p><strong>Suggested itinerary:</strong> <%= pkg.itinerary || "Personalized itinerary generated after booking." %></p>
+      <p><strong>Activities:</strong> <%= pkg.activities.join(", ") %></p>
+      <p><strong>Rating:</strong> <%= pkg.rating || 0 %> / 5 (<%= pkg.reviewsCount || 0 %> reviews)</p>
+
+      <div class="row-actions">
+        <form method="post" action="/bookings/<%= pkg._id %>">
+          <input type="date" name="travelDate" required />
+          <button class="btn btn-primary" type="submit">Book Now</button>
+        </form>
+        <% if (isFavorite) { %>
+          <form method="post" action="/favorites/<%= pkg._id %>/remove"><button class="btn btn-secondary">Remove Favorite</button></form>
+        <% } else { %>
+          <form method="post" action="/favorites/<%= pkg._id %>"><button class="btn btn-secondary">Add Favorite</button></form>
+        <% } %>
+      </div>
+    </div>
+  </article>
+
+  <article class="glass mini-card">
+    <h2>Reviews</h2>
+    <form method="post" action="/packages/<%= pkg._id %>/reviews" class="form-grid">
+      <select name="rating" required>
+        <option value="5">5 - Excellent</option>
+        <option value="4">4 - Great</option>
+        <option value="3">3 - Good</option>
+        <option value="2">2 - Fair</option>
+        <option value="1">1 - Poor</option>
+      </select>
+      <textarea name="comment" rows="3" placeholder="Share your experience" required></textarea>
+      <button class="btn btn-primary">Submit Review</button>
+    </form>
+
+    <div class="reviews">
+      <% if (!reviews.length) { %><p class="muted">No reviews yet.</p><% } %>
+      <% reviews.forEach(review => { %>
+        <div class="review-item">
+          <p><strong><%= review.userId?.name || "User" %></strong> - <%= review.rating %>/5</p>
+          <p><%= review.comment %></p>
+        </div>
+      <% }) %>
+    </div>
+  </article>
+</section>
+<%- include("../partials/footer") %>

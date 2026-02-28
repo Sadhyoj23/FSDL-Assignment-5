@@ -1,0 +1,44 @@
+<%- include("partials/header", { title: title }) %>
+<section class="hero glass">
+  <div>
+    <p class="badge">AI Powered Smart Travel Planner</p>
+    <h1>Plan your next escape with TripGenie intelligence.</h1>
+    <p class="subtitle">Discover premium destinations, auto-personalized itineraries, and instant bookings.</p>
+    <div class="hero-actions">
+      <a href="/packages" class="btn btn-primary">Explore Packages</a>
+      <% if (!isAuthenticated) { %>
+        <a href="/register" class="btn btn-secondary">Get Started</a>
+      <% } else { %>
+        <a href="/dashboard" class="btn btn-secondary">Open Dashboard</a>
+      <% } %>
+    </div>
+  </div>
+  <div class="ai-widget glass-inner">
+    <h3>TripGenie AI Assistant</h3>
+    <p>"Tell me your budget and vibe, and I will design the perfect trip."</p>
+    <div class="pulse-dot"></div>
+  </div>
+</section>
+
+<section>
+  <h2 class="section-title">All Destinations</h2>
+  <div class="card-grid">
+    <% if (!featured.length) { %>
+      <article class="glass mini-card">
+        <p>No packages available right now. Run seed data to load destinations.</p>
+      </article>
+    <% } %>
+    <% featured.forEach(pkg => { %>
+      <article class="package-card glass">
+        <img src="<%= pkg.image %>" alt="<%= pkg.title %>" />
+        <div class="card-content">
+          <h3><%= pkg.title %></h3>
+          <p><%= pkg.destination %> - <%= pkg.duration %> days</p>
+          <p class="price">$<%= pkg.price %> / person</p>
+          <a class="btn btn-primary" href="/packages/<%= pkg._id %>">View</a>
+        </div>
+      </article>
+    <% }) %>
+  </div>
+</section>
+<%- include("partials/footer") %>

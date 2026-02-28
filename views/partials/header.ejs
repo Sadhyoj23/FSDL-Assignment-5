@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> | TripGenie</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <div class="bg-orb orb1"></div>
+  <div class="bg-orb orb2"></div>
+
+  <header class="top-nav glass">
+    <a href="/" class="brand">TripGenie</a>
+    <nav>
+      <a href="/packages">Packages</a>
+      <a href="/dashboard">Dashboard</a>
+      <% if (isAuthenticated) { %>
+        <% if (isAdmin) { %><a href="/admin">Admin</a><% } %>
+        <form action="/logout" method="post" class="inline-form">
+          <button class="btn btn-secondary">Logout</button>
+        </form>
+      <% } else { %>
+        <a href="/login">Login</a>
+        <a href="/register" class="btn btn-primary">Register</a>
+      <% } %>
+    </nav>
+  </header>
+
+  <% if (success) { %><div class="toast toast-success"><%= success %></div><% } %>
+  <% if (error) { %><div class="toast toast-error"><%= error %></div><% } %>
+
+  <main class="container">

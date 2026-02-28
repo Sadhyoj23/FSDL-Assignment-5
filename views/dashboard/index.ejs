@@ -1,0 +1,74 @@
+<%- include("../partials/header", { title: title }) %>
+<section class="dashboard-layout">
+  <aside class="glass sidebar">
+    <h2>TripGenie</h2>
+    <a href="/dashboard">Overview</a>
+    <a href="/packages">Explore</a>
+    <% if (isAdmin) { %><a href="/admin">Admin</a><% } %>
+    <% if (isAuthenticated) { %>
+      <form action="/logout" method="post"><button class="btn btn-secondary full">Logout</button></form>
+    <% } else { %>
+      <a href="/login" class="btn btn-secondary full">Login</a>
+      <a href="/register" class="btn btn-primary full">Register</a>
+    <% } %>
+  </aside>
+
+  <main>
+    <section class="glass planner-panel">
+      <h1>Smart AI Planner</h1>
+      <form action="/planner" method="post" class="planner-grid">
+        <input type="number" name="budget" min="100" placeholder="Total budget (USD)" required />
+        <input type="number" name="days" min="1" placeholder="Trip days" required />
+        <select name="travelType" required>
+          <option value="adventure">Adventure</option>
+          <option value="beach">Beach</option>
+          <option value="hill station">Hill Station</option>
+          <option value="cultural">Cultural</option>
+          <option value="relaxation">Relaxation</option>
+          <option value="luxury">Luxury</option>
+          <option value="family">Family</option>
+          <option value="city">City</option>
+          <option value="road trip">Road Trip</option>
+        </select>
+        <input type="number" name="travelers" min="1" placeholder="Travelers" required />
+        <button class="btn btn-primary" type="submit">Generate Plan</button>
+      </form>
+    </section>
+
+    <section>
+      <h2 class="section-title">Your Bookings</h2>
+      <div class="card-grid">
+        <% if (!bookings.length) { %><p class="muted">No bookings yet. You can create bookings without login; they are saved for this browser session.</p><% } %>
+        <% bookings.forEach(booking => { %>
+          <article class="glass mini-card">
+            <h3><%= booking.packageId?.title || "Package removed" %></h3>
+            <p>Date: <%= new Date(booking.travelDate).toDateString() %></p>
+            <p>Status: <span class="status"><%= booking.status %></span></p>
+          </article>
+        <% }) %>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="section-title">Favorites</h2>
+      <div class="card-grid">
+        <% if (!favorites.length) { %><p class="muted">No favorites saved yet.</p><% } %>
+        <% favorites.forEach(fav => { %>
+          <% if (fav.packageId) { %>
+            <article class="glass mini-card">
+              <h3><%= fav.packageId.title %></h3>
+              <p><%= fav.packageId.destination %></p>
+              <div class="row-actions">
+                <a href="/packages/<%= fav.packageId._id %>" class="btn btn-primary">Open</a>
+                <form action="/favorites/<%= fav.packageId._id %>/remove" method="post">
+                  <button class="btn btn-secondary" type="submit">Remove</button>
+                </form>
+              </div>
+            </article>
+          <% } %>
+        <% }) %>
+      </div>
+    </section>
+  </main>
+</section>
+<%- include("../partials/footer") %>
